@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WealthLens – Personal Finance Tracker | Budget, Expenses & Savings</title>
+    <meta name="description"
+        content="Track your income, expenses, and savings with WealthLens. Visualize your personal finance journey with beautiful charts, smart budgeting tools, and real-time insights." />
+    <meta name="keywords"
+        content="personal finance tracker, budget planner, expense tracker, savings tracker, money management, financial dashboard" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="WealthLens – Personal Finance Tracker" />
+    <meta property="og:description" content="Track income, expenses, and savings with stunning visual insights." />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://wealthlens.app/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet" />
+        <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav aria-label="Main navigation">
+        <div class="logo">Wealth<span>Lens</span></div>
+        <ul class="nav-links" role="list">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#transactions">Transactions</a></li>
+            <li><a href="#budget">Budget</a></li>
+            <li><a href="#tips">Tips</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero" role="banner">
+        <p class="hero-eyebrow">// Personal Finance OS</p>
+        <h1>Your money,<br /><em>finally</em> in focus.</h1>
+        <p>Track income, expenses, and savings with clarity. WealthLens gives you a real-time lens on where your money
+            goes — and where it should go.</p>
+    </header>
+
+    <main class="container" id="dashboard" role="main">
+
+        <!-- KPIs -->
+        <section class="kpi-strip" aria-label="Financial summary">
+            <div class="kpi-card">
+                <span class="kpi-label">Total Income</span>
+                <span class="kpi-value income" id="kpi-income">₹0</span>
+                <span class="kpi-sub" id="kpi-income-count"><b>0</b> transactions</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Total Expenses</span>
+                <span class="kpi-value expense" id="kpi-expense">₹0</span>
+                <span class="kpi-sub" id="kpi-expense-count"><b>0</b> transactions</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Net Savings</span>
+                <span class="kpi-value saving" id="kpi-saving">₹0</span>
+                <span class="kpi-sub" id="kpi-saving-rate">Savings rate: <b>0%</b></span>
+            </div>
+        </section>
+
+        <div class="dashboard-grid">
+
+            <!-- LEFT COL -->
+            <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+                <!-- CHART -->
+                <article class="card" aria-label="Monthly overview chart">
+                    <h2 class="card-title">Monthly Overview</h2>
+                    <div class="chart-area">
+                        <canvas id="barChart" aria-label="Bar chart showing income vs expenses by month"
+                            role="img"></canvas>
+                    </div>
+                </article>
+
+                <!-- TRANSACTIONS -->
+                <article class="card" id="transactions" aria-label="Transaction list">
+                    <h2 class="card-title">Recent Transactions</h2>
+                    <div class="filter-row">
+                        <label for="monthFilter" style="margin:0;color:var(--muted);">Filter:</label>
+                        <select id="monthFilter" onchange="renderTx()">
+                            <option value="all">All time</option>
+                        </select>
+                    </div>
+                    <div class="tx-list" id="txList" role="list" aria-live="polite">
+                        <div class="empty-state">No transactions yet. Add one →</div>
+                    </div>
+                </article>
+
+                <!-- TIPS -->
+                <article class="card" id="tips" aria-label="Personal finance tips">
+                    <h2 class="card-title">Smart Money Tips</h2>
+                    <div class="tips-grid">
+                        <div class="tip"><strong>50 / 30 / 20 Rule</strong>Spend 50% on needs, 30% on wants, and save
+                            20% of your income every month.</div>
+                        <div class="tip"><strong>Emergency Fund</strong>Keep 3–6 months of expenses in a liquid, easily
+                            accessible savings account.</div>
+                        <div class="tip"><strong>Automate Savings</strong>Set up automatic transfers on payday. Pay
+                            yourself first before spending anything.</div>
+                        <div class="tip"><strong>Review Monthly</strong>Spending awareness alone can cut discretionary
+                            expenses by 15–25%.</div>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- RIGHT COL -->
+            <aside style="display:flex;flex-direction:column;gap:1.5rem;">
+
+                <!-- ADD TRANSACTION -->
+                <div class="card" aria-label="Add transaction form">
+                    <h2 class="card-title">Add Transaction</h2>
+                    <form class="add-form" id="txForm" aria-label="Transaction entry form">
+
+                        <div>
+                            <div class="type-toggle" role="radiogroup" aria-label="Transaction type">
+                                <input type="radio" name="type" id="t-income" value="income" checked />
+                                <label for="t-income">+ Income</label>
+                                <input type="radio" name="type" id="t-expense" value="expense" />
+                                <label for="t-expense">− Expense</label>
+                                <input type="radio" name="type" id="t-saving" value="saving" />
+                                <label for="t-saving">◎ Saving</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="txDesc">Description</label>
+                            <input type="text" id="txDesc" placeholder="e.g. Monthly Salary" required maxlength="60"
+                                autocomplete="off" />
+                        </div>
+
+                        <div class="form-row">
+                            <div>
+                                <label for="txAmount">Amount (₹)</label>
+                                <input type="number" id="txAmount" placeholder="0.00" min="0.01" step="0.01" required />
+                            </div>
+                            <div>
+                                <label for="txDate">Date</label>
+                                <input type="date" id="txDate" required />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="txCategory">Category</label>
+                            <select id="txCategory">
+                                <option value="Salary">💼 Salary</option>
+                                <option value="Freelance">🖥 Freelance</option>
+                                <option value="Investment">📈 Investment</option>
+                                <option value="Food">🍜 Food & Dining</option>
+                                <option value="Rent">🏠 Rent / Housing</option>
+                                <option value="Transport">🚌 Transport</option>
+                                <option value="Health">💊 Health</option>
+                                <option value="Shopping">🛍 Shopping</option>
+                                <option value="Entertainment">🎬 Entertainment</option>
+                                <option value="Utilities">⚡ Utilities</option>
+                                <option value="Education">📚 Education</option>
+                                <option value="SIP">📊 SIP / Mutual Fund</option>
+                                <option value="Other">✦ Other</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-add">Add Transaction</button>
+                    </form>
+                </div>
+
+                <!-- DONUT -->
+                <article class="card" id="budget" aria-label="Spending breakdown">
+                    <h2 class="card-title">Spending Breakdown</h2>
+                    <div class="donut-wrap">
+                        <div class="donut-canvas-wrap">
+                            <canvas id="donutChart" width="140" height="140"
+                                aria-label="Donut chart of spending categories" role="img"></canvas>
+                            <div class="donut-center">
+                                <span class="donut-center-val" id="donutTotal">₹0</span>
+                                <span class="donut-center-lbl">Spent</span>
+                            </div>
+                        </div>
+                        <div class="donut-legend" id="donutLegend"></div>
+                    </div>
+                </article>
+
+                <!-- BUDGET PROGRESS -->
+                <article class="card" aria-label="Budget progress by category">
+                    <h2 class="card-title">Budget Progress</h2>
+                    <div class="budget-bars" id="budgetBars">
+                        <div class="empty-state" style="padding:1rem 0;">Add expenses to see budget breakdown</div>
+                    </div>
+                </article>
+
+            </aside>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <p>WealthLens &copy; 2025 &mdash; Your data stays <strong>local</strong> in your browser. No servers, no
+            tracking. &nbsp;|&nbsp; <a href="#">Privacy</a></p>
+    </footer>
+
+    <div id="toast" role="alert" aria-live="assertive"></div>
+
+    
+<script src="./script.js"></script>
+    <!-- STRUCTURED DATA for SEO -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "WealthLens",
+  "description": "Personal finance tracker to monitor income, expenses, and savings with visual analytics.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web Browser",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+}
+</script>
+
+</body>
+
+</html>
